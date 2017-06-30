@@ -1,11 +1,11 @@
 <template>
   <div id="container">
     <input type="text" v-model="newTaskValue"/>
-    <button id="btn-add-todo" v-on:click="addTask">Add Task</button>
-    <button id="btn-clear-done">Clear</button>
+    <button v-on:click="addTask">Add Task</button>
+    <button @click="deleteTasks">Clear</button>
     <ol>
       <li v-for="(todo, index) in getTodos">
-        <input type="checkbox" @click="changeStyle(index)"/>
+        <input type="checkbox" @click="changeStyle(index)" v-bind:checked="checkDone(index)"/>
         <span v-bind:class="{'strike-through' : checkDone(index)}">{{todo.task}}</span>
         <input type="button" value="Delete" @click="deleteTask(index)"/>
       </li>
@@ -37,16 +37,32 @@
         }
 
         $store.commit('addTodo', newTask)
+        this.updateTodosToLocalStorage()
         this.newTaskValue = ''
       },
       deleteTask (index) {
         $store.commit('deleteTodo', index)
+        this.updateTodosToLocalStorage()
       },
       changeStyle (index) {
         $store.commit('changeStyle', index)
+        this.updateTodosToLocalStorage()
       },
       checkDone: function (index) {
         return $store.state.todoListArray[index].done
+      },
+      deleteTasks () {
+        var todos = this.getTodos
+        for (let index = 0; index < todos.length;) {
+          if (todos[index].done) {
+            this.deleteTask(index)
+          } else {
+            index++
+          }
+        }
+      },
+      updateTodosToLocalStorage () {
+        localStorage.setItem('todos', JSON.stringify(this.getTodos))
       }
     }
   }
@@ -56,9 +72,11 @@
   #container {
     padding: 50px;
   }
-  .strike-through{
+
+  .strike-through {
     text-decoration: line-through;
   }
+
   input[type="Button"] {
     margin-left: 50px;
   }
