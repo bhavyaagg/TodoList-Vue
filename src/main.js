@@ -3,7 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import store from './store'
+import $store from './store'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -16,7 +16,10 @@ Vue.use(BootstrapVue)
 new Vue({
   el: '#app',
   router,
-  store,
+  $store,
   template: '<App/>',
-  components: { App }
+  components: { App },
+  created: function () {
+    $store.commit('updateTodosFromLocalStorage', JSON.parse(localStorage.getItem('todos')))
+  }
 })

@@ -11,16 +11,6 @@ export default new Vuex.Store({
   state: {
     todoListArray: []
   },
-  computed: {
-    getTodosFromLocalStorage () {
-      var todos = localStorage.getItem('todos')
-      console.log(todos)
-      if (!todos) {
-        todos = []
-      }
-      return todos
-    }
-  },
   mutations: {
     addTodo (state, task) {
       state.todoListArray.push(task)
@@ -32,10 +22,10 @@ export default new Vuex.Store({
       state.todoListArray[taskId].done = !state.todoListArray[taskId].done
     },
     updateTodosFromLocalStorage (state, newTodos) {
+      if (!newTodos) {
+        return
+      }
       state.todoListArray = newTodos
     }
-  },
-  created: function () {
-    this.commit('updateTodosFromLocalStorage', JSON.parse(this.getTodosFromLocalStorage))
   }
 })
